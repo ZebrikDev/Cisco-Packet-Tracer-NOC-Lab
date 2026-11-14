@@ -1,16 +1,28 @@
-# Cisco Packet Tracer – NOC Network Configuration & Troubleshooting Lab
+# Cisco Packet Tracer NOC Lab
 
-A personal Packet Tracer simulation lab for practicing IPv4 configuration, DHCP, static routing, wired and wireless connectivity, and evidence-based incident troubleshooting.
+I built this network operations lab in Cisco Packet Tracer to practice IPv4 addressing, DHCP, static routing, and wired and wireless connectivity. I simulated three faults and documented how I diagnosed and resolved each one.
 
-![Logical view of the simulated network](screenshots/logical-topology.png)
+**[Download the Packet Tracer lab (.pkt)](https://github.com/ZebrikDev/cisco-packet-tracer-noc-lab/raw/refs/heads/main/noc-network-lab-final.pkt)** · [Troubleshooting cases](#troubleshooting-cases) · [Router configurations](configs/README.md)
 
-## Lab overview
+## Topology
+
+[![Packet Tracer Logical workspace showing LAN A, the network room, and LAN B on the office floor plan](screenshots/packet-tracer-topology.png)](screenshots/packet-tracer-topology.png)
 
 The network uses two Cisco 2911 routers, two Cisco 2960-24TT switches, four wired PCs, two wireless laptops, and one AccessPoint-PT. PC1 and PC2 share LAN A with both laptops. PC3 and PC4 are in LAN B. R1 and R2 connect the LANs over a dedicated transit subnet. AP1 bridges the laptops on the `NOC-LAB-A` SSID to S1.
 
-The lab was built in Cisco Packet Tracer 9.0.0.0810 on macOS. The [Physical workspace](screenshots/physical-workspace.png) places the workstations and wiring closet over a [custom illustrated floor plan](assets/physical-floor-plan.png).
+<details>
 
-## Topology
+<summary>Physical workspace and floor plan</summary>
+
+[![Packet Tracer physical workspace with workstations and wiring closet](screenshots/physical-workspace.png)](screenshots/physical-workspace.png)
+
+[View the source floor plan](assets/physical-floor-plan.png).
+
+</details>
+
+<details>
+
+<summary>Network diagram</summary>
 
 ```mermaid
 flowchart TD
@@ -24,6 +36,8 @@ flowchart TD
 ```
 
 The dotted connection represents Wi-Fi. The other connections are Ethernet links.
+
+</details>
 
 ## IPv4 addressing
 
@@ -59,7 +73,7 @@ The [configuration reference](configs/README.md) links to the original CLI captu
 | Router transit | R1 received 5/5 replies from `10.0.0.2` | [Transit ping](screenshots/incident-002-transit-ping.png) |
 | LAN A DHCP | Two wired client leases shown during initial setup | [DHCP bindings](screenshots/lan-a-dhcp-bindings.png) |
 | Wireless association | Both laptops linked to AP1 | [Wi-Fi topology](screenshots/wi-fi-associations.png) |
-| Wireless IPv4 and connectivity | DHCP, local gateway ping and remote host ping worked on both laptops, as reported during the lab | Operator confirmation |
+| Wireless IPv4 and connectivity | I verified DHCP and pinged the local gateway and a remote host from both laptops | Lab observation |
 | PC1 to LAN B | `tracert` reached the destination through `192.168.10.1` and `10.0.0.2` | [Two-router trace](screenshots/tracert-two-routers.png) |
 | Final PC1 to PC3 | First attempt 2/4 replies, immediate repeat 4/4 and 0% loss | [Final cross-LAN ping](screenshots/final-cross-lan-ping.png) |
 
@@ -73,7 +87,7 @@ The initial unanswered probes appear in the original capture. Their cause was no
 | [002 · Missing static routes](incidents/incident-002-missing-static-routes.md) | R1 lacked the route to LAN B. Investigation also found R2's return route missing. | Restored both routes and verified end-to-end connectivity. |
 | [003 · Incorrect default gateway](incidents/incident-003-incorrect-default-gateway.md) | PC1 could reach its own subnet but lost remote reachability after its default gateway changed. | Corrected the gateway and verified 4/4 replies from PC3. |
 
-The exercises used controlled changes and a known-good copy. Each report records scope, evidence, cause, repair, and the checks run after repair.
+I reproduced each fault in a working copy of the lab. Each report documents the impact, diagnostic evidence, root cause, repair, and verification.
 
 ## Command reference
 
@@ -88,7 +102,12 @@ The exercises used controlled changes and a known-good copy. Each report records
 
 ## Opening the lab
 
-Open [noc-network-lab-final.pkt](noc-network-lab-final.pkt) in Cisco Packet Tracer. Use **Logical** for topology and CLI access or **Physical** for the office layout. In Realtime mode, check PC3's current address with `ipconfig`, then ping it from PC1. Save the router startup configurations and the project file after changes.
+The lab was built in Cisco Packet Tracer 9.0.0.0810 on macOS.
+
+1. Open [noc-network-lab-final.pkt](noc-network-lab-final.pkt) in Cisco Packet Tracer.
+2. Select **Logical** for topology and CLI access or **Physical** for the office layout.
+3. In **Realtime** mode, run `ipconfig` on PC3, then ping its current IPv4 address from PC1.
+4. If you change a router configuration, save the startup configuration and the project file.
 
 ## Learning outcomes and limitations
 
@@ -96,4 +115,3 @@ Open [noc-network-lab-final.pkt](noc-network-lab-final.pkt) in Cisco Packet Trac
 - Used host, interface, and route evidence to distinguish three faults and verify recovery.
 - Recorded the scope of each check and retained original screenshots.
 - Results describe a Packet Tracer simulation. Timing values are simulator output. Internet access and production monitoring are outside the lab scope.
-
